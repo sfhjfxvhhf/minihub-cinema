@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stream Cinema - MiniHub</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Security: Disables Mobile Long-Press Popup & Text Copying */
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            font-family: 'Outfit', sans-serif;
+        }
+        body {
+            background-color: #07080b;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glass-header {
+            background: rgba(7, 8, 11, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #07080b; }
+        ::-webkit-scrollbar-thumb { background: #1e212b; border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased pb-24">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-header border-b border-[#1b1e28] px-4 lg:px-10 py-3.5">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-rose-600 flex items-center justify-center shadow-lg shadow-rose-600/30">
+                    <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <span class="text-xl font-black text-white">MINI<span class="text-rose-500">HUB</span></span>
+            </a>
+            <a href="index.html" class="flex items-center gap-2 text-xs font-bold bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-4 py-2 rounded-xl transition">
+                ← Back to Browse
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Player Area -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-10 mt-5 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left 2 Columns: Protected Cinema Player -->
+        <div class="lg:col-span-2 space-y-4">
+            
+            <!-- Video Frame with Live In-Stream Ad Slot -->
+            <div class="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-[#1b1e28] shadow-2xl relative">
+                
+                <!-- Main Player (Download is Blocked via controlsList) -->
+                <video 
+                    id="mainPlayer" 
+                    controls 
+                    controlsList="nodownload" 
+                    playsinline 
+                    class="w-full h-full object-contain"
+                ></video>
+
+                <!-- YouTube-Style Live Web In-Stream Ad Overlay -->
+                <div id="adLayer" class="absolute inset-0 z-30 bg-black hidden">
+                    
+                    <!-- Live Adsterra Page from Database -->
+                    <iframe 
+                        id="adIframe" 
+                        src="about:blank"
+                        class="w-full h-full border-0 absolute inset-0 z-10 bg-white"
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    ></iframe>
+
+                    <!-- Top Ad Header -->
+                    <div class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 md:p-5">
+                        <div class="flex items-center justify-between pointer-events-auto">
+                            <div class="flex items-center gap-2 bg-black/85 backdrop-blur px-3 py-1.5 rounded-lg border border-white/10 shadow">
+                                <span class="bg-yellow-400 text-black text-[10px] font-black px-1.5 py-0.5 rounded">Ad</span>
+                                <span class="text-xs font-bold text-white">Sponsored &bull; (0:<span id="adTimerText">12</span>)</span>
+                            </div>
+                            <button onclick="openAdLinkExternal()" class="text-xs font-bold bg-black/85 hover:bg-black border border-white/20 px-3.5 py-1.5 rounded-lg text-rose-400 hover:text-white transition shadow">
+                                Visit Site ↗
+                            </button>
+                        </div>
+
+                        <!-- YouTube-Style Skip Button -->
+                        <div class="flex justify-end pointer-events-auto">
+                            <button id="skipBtn" disabled class="bg-black/90 border border-white/20 text-gray-400 font-bold text-xs px-5 py-2.5 rounded-xl cursor-not-allowed shadow-2xl backdrop-blur">
+                                Skip Ad in <span id="skipCount">6</span>s
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Video Metadata & Interaction Bar -->
+            <div class="bg-[#111217] border border-[#1b1e28] p-5 rounded-2xl">
+                <h1 id="videoTitle" class="text-lg md:text-xl font-black text-white leading-snug">Loading Stream...</h1>
+                
+                <div class="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-[#1b1e28]">
+                    <div class="flex items-center gap-2">
+                        <span id="videoCategory" class="text-xs font-bold bg-[#181a24] border border-[#1b1e28] text-gray-300 px-3 py-1 rounded-lg uppercase tracking-wider">Category</span>
+                        <span class="text-xs text-gray-400 font-medium">👁️ <span id="viewCount">0</span> Views</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <!-- Like Button -->
+                        <button id="likeBtn" onclick="handleLike()" class="flex items-center gap-2 bg-[#181a24] hover:bg-[#202330] border border-[#1b1e28] text-gray-200 px-4 py-2 rounded-xl text-xs font-bold transition">
+                            <span id="likeIcon">❤️</span>
+                            <span id="likeCount">0</span>
+                        </button>
+
+                        <!-- Viral Share Button -->
+                        <button onclick="handleViralShare()" class="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-xl text-xs font-extrabold shadow-lg shadow-rose-600/30 transition">
+                            <span>🚀 Viral Share</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right 1 Column: Up Next Feed (Auto-Play) -->
+        <div class="lg:col-span-1 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-wider">Up Next For You</h3>
+                <span class="text-[10px] font-bold text-rose-500 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded-full">● Auto-Play</span>
+            </div>
+            
+            <div id="upNextList" class="flex flex-col gap-3">
+                <p class="text-xs text-gray-500 py-3">Loading suggestions...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-rose-600 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50">
+        Link Copied!
+    </div>
+
+    <script>
+        // ==========================================================
+        // 1. Configurations & Security
+        // ==========================================================
+        const SUPABASE_URL = "https://apeuuzhfjqrmresuorlu.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7yAPnv1oxgzk33rLXLLVfA_hgB77o2i";
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const currentVideoId = parseInt(new URLSearchParams(window.location.search).get('id'));
+
+        let dynamicAdLink = "https://www.profitableratecpmnetwork.com/mauri6e1f7?key=3f0fd74c9f3bf54e626c46f57f001477";
+        let currentVideo = null;
+        let nextVideoId = null;
+
+        // Anti-Inspect / Content Protection
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'c' || e.key === 'C'))) {
+                e.preventDefault();
+            }
+        });
+
+        // ==========================================================
+        // 2. Load Video & Dynamic Ads
+        // ==========================================================
+        async function loadWatchPage() {
+            if (!currentVideoId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Fetch dynamic ad link from database
+            try {
+                const { data: adData } = await supabaseClient
+                    .from('site_settings')
+                    .select('value')
+                    .eq('key', 'adsterra_link')
+                    .single();
+                if (adData && adData.value) dynamicAdLink = adData.value;
+            } catch(e) {}
+
+            // Fetch video details
+            try {
+                const { data, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .eq('id', currentVideoId)
+                    .single();
+
+                if (error || !data) throw new Error("Not found");
+                currentVideo = data;
+
+                // Bind UI
+                const mainPlayer = document.getElementById('mainPlayer');
+                mainPlayer.src = currentVideo.video_url;
+                document.getElementById('videoTitle').innerText = currentVideo.title;
+                document.getElementById('videoCategory').innerText = currentVideo.category || 'General';
+                document.getElementById('likeCount').innerText = currentVideo.likes || 0;
+                document.getElementById('viewCount').innerText = (currentVideo.views || 0) + 1;
+                document.title = `${currentVideo.title} - MiniHub`;
+
+                // Increment View count in database + Analytics log
+                supabaseClient.rpc('increment_view', { video_id: currentVideoId }).then();
+                const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+                supabaseClient.from('analytics').insert([{ 
+                    event_type: 'watch', 
+                    video_id: currentVideoId,
+                    device: isMobile ? 'Mobile 📱' : 'Desktop 💻' 
+                }]).then();
+
+                // Setup auto next
+                mainPlayer.onended = () => {
+                    if (nextVideoId) window.location.href = `watch.html?id=${nextVideoId}`;
+                };
+
+                checkLikeState();
+                loadUpNextQueue();
+
+                // 1st video is ad-free, 2nd video onwards displays the live ad
+                handleInStreamAdEngine();
+
+            } catch(err) {
+                console.error(err);
+                document.getElementById('videoTitle').innerText = "Video unavailable or deleted.";
+            }
+        }
+
+        // ==========================================================
+        // 3. YouTube-Style In-Stream Web Ad Engine
+        // ==========================================================
+        function handleInStreamAdEngine() {
+            const hasWatchedFirst = localStorage.getItem('has_watched_before');
+            const mainPlayer = document.getElementById('mainPlayer');
+
+            if (!hasWatchedFirst) {
+                localStorage.setItem('has_watched_before', 'true');
+                mainPlayer.play().catch(() => {});
+            } else {
+                startAdOverlay();
+            }
+        }
+
+        function startAdOverlay() {
+            const adLayer = document.getElementById('adLayer');
+            const adIframe = document.getElementById('adIframe');
+            const mainPlayer = document.getElementById('mainPlayer');
+            const skipBtn = document.getElementById('skipBtn');
+            const skipCount = document.getElementById('skipCount');
+            const adTimerText = document.getElementById('adTimerText');
+
+            mainPlayer.pause();
+            adLayer.classList.remove('hidden');
+            adIframe.src = dynamicAdLink;
+
+            let adDuration = 12;
+            let skipDelay = 6;
+
+            const timer = setInterval(() => {
+                adDuration--;
+                adTimerText.innerText = adDuration < 10 ? '0' + adDuration : adDuration;
+
+                if (skipDelay > 1) {
+                    skipDelay--;
+                    skipCount.innerText = skipDelay;
+                } else if (skipDelay === 1) {
+                    skipDelay = 0;
+                    skipBtn.disabled = false;
+                    skipBtn.className = "bg-rose-600 hover:bg-rose-700 text-white font-black text-xs px-6 py-2.5 rounded-xl shadow-2xl cursor-pointer flex items-center gap-1.5 transition";
+                    skipBtn.innerHTML = "Skip Ad ⏭";
+                    skipBtn.onclick = closeAd;
+                }
+
+                if (adDuration <= 0) {
+                    clearInterval(timer);
+                    closeAd();
+                }
+            }, 1000);
+
+            function closeAd() {
+                clearInterval(timer);
+                adIframe.src = "about:blank";
+                adLayer.classList.add('hidden');
+                mainPlayer.play().catch(() => {});
+            }
+        }
+
+        function openAdLinkExternal() {
+            window.open(dynamicAdLink, '_blank');
+        }
+
+        // ==========================================================
+        // 4. Viral Social Share Hook (আপনার দেওয়া ফরম্যাট অনুযায়ী)
+        // ==========================================================
+        async function handleViralShare() {
+            const shareUrl = window.location.href;
+            
+            // ভাইরাল শেয়ার টেক্সট ফরম্যাট
+            const viralMessage = `🔥 ${currentVideo ? currentVideo.title : 'Unrated Exclusive Video'} 💦🫵👇\n${shareUrl}\n\nWatch till the end, what comes next is even more shocking! 😱🔞`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: currentVideo ? currentVideo.title : 'MiniHub Cinema',
+                        text: viralMessage,
+                        url: shareUrl
+                    });
+                } catch(e) {}
+            } else {
+                navigator.clipboard.writeText(viralMessage);
+                showToast("🔥 Viral share link & hook copied to clipboard!");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // ==========================================================
+        // 5. Like System
+        // ==========================================================
+        function checkLikeState() {
+            if (localStorage.getItem('liked_' + currentVideoId)) {
+                document.getElementById('likeBtn').classList.add('text-rose-500', 'border-rose-500/50');
+            }
+        }
+
+        async function handleLike() {
+            if (localStorage.getItem('liked_' + currentVideoId)) {
+                showToast("You already liked this video!");
+                return;
+            }
+            await supabaseClient.rpc('increment_like', { video_id: currentVideoId });
+            const el = document.getElementById('likeCount');
+            el.innerText = parseInt(el.innerText) + 1;
+            localStorage.setItem('liked_' + currentVideoId, 'true');
+            checkLikeState();
+            showToast("Liked!");
+        }
+
+        // ==========================================================
+        // 6. Up Next Queue with 1st-Second Auto Thumbnails
+        // ==========================================================
+        async function loadUpNextQueue() {
+            const list = document.getElementById('upNextList');
+            const { data } = await supabaseClient
+                .from('videos')
+                .select('*')
+                .neq('id', currentVideoId)
+                .limit(8);
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-500 py-3">No further videos in queue.</p>';
+                return;
+            }
+
+            nextVideoId = data[0].id;
+            list.innerHTML = data.map(v => {
+                const hasCustomThumb = v.thumbnail_url && v.thumbnail_url.trim() !== '';
+
+                return `
+                    <div onclick="window.location.href='watch.html?id=${v.id}'" class="flex gap-3 bg-[#111217] hover:bg-[#181a24] p-2.5 rounded-xl cursor-pointer border border-[#1b1e28] transition group">
+                        <div class="w-28 aspect-video bg-black rounded-lg overflow-hidden shrink-0 relative">
+                            ${hasCustomThumb ? `
+                                <img src="${v.thumbnail_url}" class="w-full h-full object-cover">
+                            ` : `
+                                <video src="${v.video_url}#t=1.0" preload="metadata" class="w-full h-full object-cover pointer-events-none"></video>
+                            `}
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h4 class="text-xs font-bold text-gray-200 group-hover:text-rose-500 line-clamp-2 leading-snug">${v.title}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">${v.category || 'General'}</span>
+                                <span class="text-[9px] text-gray-400">👁️ ${v.views || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        loadWatchPage();
+    </script>
+</body>
+</html>
