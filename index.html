@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MiniHub - Trending & Exclusive 18+ Cinema</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Anti-Link Grabbing & Anti-Inspect Security */
+        * {
+            -webkit-touch-callout: none !important; /* Disables mobile long-press popup */
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            font-family: 'Outfit', sans-serif;
+        }
+        body {
+            background-color: #07080b;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glass-header {
+            background: rgba(7, 8, 11, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .card-zoom {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-zoom.active-preview {
+            transform: scale(1.04);
+            z-index: 30;
+            box-shadow: 0 15px 35px -5px rgba(225, 29, 72, 0.5);
+            border-color: rgba(225, 29, 72, 0.8) !important;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #07080b; }
+        ::-webkit-scrollbar-thumb { background: #1e212b; border-radius: 4px; }
+    </style>
+</head>
+<body class="selection:bg-rose-600 selection:text-white pb-24">
+
+    <!-- Mature Audience Warning Banner -->
+    <div class="bg-gradient-to-r from-red-950 via-rose-600 to-black text-[10px] md:text-xs font-black tracking-widest text-center py-1.5 uppercase text-white/95 border-b border-rose-800/40">
+        🔞 18+ MATURE CONTENT &bull; RESTRICTED ACCESS &bull; ULTRA HD STREAMING
+    </div>
+
+    <!-- Global Glass Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-header border-b border-[#1b1e28] px-4 lg:px-10 py-3.5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center shadow-lg shadow-rose-600/30">
+                    <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div>
+                    <span class="text-xl font-black text-white leading-none tracking-tight">MINI<span class="text-rose-500">HUB</span></span>
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-rose-400">GLOBAL CINEMA</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="relative flex-1 max-w-md hidden sm:block">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    oninput="handleSearch()" 
+                    placeholder="Search videos, models, topics..." 
+                    class="w-full bg-[#12141c] border border-[#1b1e28] focus:border-rose-500 text-xs rounded-full pl-10 pr-4 py-2.5 outline-none transition text-white placeholder-gray-500"
+                >
+                <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+
+            <!-- Algorithm Refresh / Discovery Button -->
+            <button onclick="refreshFeedWithAlgorithm()" title="Refresh Feed" class="flex items-center gap-1.5 text-xs font-bold bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-3.5 py-2 rounded-xl transition">
+                <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span class="hidden md:inline">For You</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Netflix-Style Spotlight: 1st Video Autoplays Here -->
+    <section id="heroSection" class="max-w-7xl mx-auto px-4 lg:px-10 mt-5 hidden">
+        <div class="relative w-full aspect-[21/9] min-h-[260px] md:min-h-[380px] bg-black rounded-3xl overflow-hidden border border-[#1b1e28] shadow-2xl flex items-end p-6 md:p-10 group">
+            
+            <!-- 1st Video Autoplay Engine (Muted, Loop) -->
+            <video 
+                id="heroVideoPlayer" 
+                muted 
+                loop 
+                playsinline 
+                autoplay 
+                class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-75 transition duration-700 pointer-events-none"
+            ></video>
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-[#07080b] via-[#07080b]/50 to-transparent"></div>
+
+            <div class="relative z-10 max-w-xl">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-rose-600 text-[10px] font-black uppercase tracking-widest text-white px-2.5 py-1 rounded-md shadow">Featured Premiere</span>
+                    <span class="bg-black/60 backdrop-blur border border-white/10 text-[10px] font-bold text-gray-300 px-2 py-0.5 rounded">Auto-Playing</span>
+                </div>
+                <h1 id="heroTitle" class="text-xl md:text-3xl font-black text-white leading-tight mb-3 drop-shadow">Loading Premiere...</h1>
+                <div class="flex items-center gap-3">
+                    <button id="heroPlayBtn" class="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs md:text-sm px-6 py-2.5 rounded-xl transition shadow-lg shadow-rose-600/30">
+                        <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Watch Full Video
+                    </button>
+                    <span class="text-xs text-gray-400 font-semibold bg-black/60 px-3 py-2 rounded-xl backdrop-blur border border-white/5">Ultra HD Quality</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories / Algorithmic Pills -->
+    <section class="max-w-7xl mx-auto px-4 lg:px-10 mt-6">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-extrabold tracking-wider uppercase text-gray-400 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                Recommended Feed
+            </h2>
+            <span class="text-[11px] text-gray-500 font-medium">Smart Algorithmic Feed</span>
+        </div>
+        
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <button onclick="filterVideos('all', this)" class="cat-pill active bg-rose-600 text-white px-5 py-2 rounded-xl text-xs font-bold whitespace-nowrap shadow-lg shadow-rose-600/30 transition">All Recommendations</button>
+            <button onclick="filterVideos('18+', this)" class="cat-pill bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition">🔥 18+ Unrated</button>
+            <button onclick="filterVideos('entertainment', this)" class="cat-pill bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition">Entertainment</button>
+            <button onclick="filterVideos('news', this)" class="cat-pill bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition">News & Leaks</button>
+        </div>
+    </section>
+
+    <!-- Main Video Grid -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-10 mt-5">
+        <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="col-span-full py-24 text-center">
+                <div class="w-10 h-10 border-4 border-rose-500/20 border-t-rose-600 rounded-full animate-spin mx-auto mb-3"></div>
+                <p class="text-xs font-semibold text-gray-400">Curating Personalized Videos...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================================
+        // 1. Database & Global Configuration
+        // ==========================================================
+        const SUPABASE_URL = "https://apeuuzhfjqrmresuorlu.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7yAPnv1oxgzk33rLXLLVfA_hgB77o2i";
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let dynamicAdLink = "https://www.profitableratecpmnetwork.com/mauri6e1f7?key=3f0fd74c9f3bf54e626c46f57f001477";
+        let rawVideoList = [];
+        let algorithmicFeed = [];
+
+        // ==========================================================
+        // 2. Security: Anti-Inspect & Anti-Link Grabbing
+        // ==========================================================
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'c' || e.key === 'C'))) {
+                e.preventDefault();
+            }
+        });
+
+        // Visitor Logging
+        try {
+            const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+            supabaseClient.from('analytics').insert([{ 
+                event_type: 'visit', 
+                device: isMobile ? 'Mobile 📱' : 'Desktop 💻' 
+            }]).then();
+        } catch(e) {}
+
+        // ==========================================================
+        // 3. Dynamic Ads Loader (From Database)
+        // ==========================================================
+        async function loadDynamicAdSettings() {
+            try {
+                const { data } = await supabaseClient
+                    .from('site_settings')
+                    .select('value')
+                    .eq('key', 'adsterra_link')
+                    .single();
+                if (data && data.value) {
+                    dynamicAdLink = data.value;
+                }
+            } catch(err) {}
+        }
+
+        // ==========================================================
+        // 4. Recommendation Engine (YouTube / Facebook Hybrid Algorithm)
+        // ==========================================================
+        function applyRecommendationAlgorithm(videos) {
+            // Get user interaction history from localStorage
+            let userInterests = {};
+            try {
+                userInterests = JSON.parse(localStorage.getItem('user_interests')) || {};
+            } catch(e) {}
+
+            return [...videos].sort((a, b) => {
+                const aInterest = userInterests[a.category] || 0;
+                const bInterest = userInterests[b.category] || 0;
+
+                // Score = (User Interaction Weight * 3) + (Views Weight) + (Random Discovery Surprise)
+                const aScore = (aInterest * 3) + ((a.views || 0) * 0.05) + (Math.random() * 4);
+                const bScore = (bInterest * 3) + ((b.views || 0) * 0.05) + (Math.random() * 4);
+
+                return bScore - aScore;
+            });
+        }
+
+        // ==========================================================
+        // 5. Data Fetching & Setup
+        // ==========================================================
+        async function initFeed() {
+            await loadDynamicAdSettings();
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+                rawVideoList = data || [];
+
+                if (rawVideoList.length > 0) {
+                    // Feed 1st video to the Autoplay Hero Banner
+                    setupHeroBanner(rawVideoList[0]);
+                }
+
+                refreshFeedWithAlgorithm();
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('videoGrid').innerHTML = '<p class="col-span-full text-center py-20 text-red-500">Failed to load feed. Check database connection.</p>';
+            }
+        }
+
+        function setupHeroBanner(video) {
+            const heroSection = document.getElementById('heroSection');
+            const heroVid = document.getElementById('heroVideoPlayer');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroPlayBtn = document.getElementById('heroPlayBtn');
+
+            heroTitle.innerText = video.title;
+            heroVid.src = video.video_url;
+            heroPlayBtn.onclick = () => openWatchPage(video.id, video.category);
+            heroSection.classList.remove('hidden');
+        }
+
+        function refreshFeedWithAlgorithm() {
+            algorithmicFeed = applyRecommendationAlgorithm(rawVideoList);
+            renderVideos(algorithmicFeed);
+        }
+
+        // ==========================================================
+        // 6. Card Rendering with Auto 1st-Second Thumbnail
+        // ==========================================================
+        function renderVideos(videos) {
+            const grid = document.getElementById('videoGrid');
+            if (!videos || videos.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-500">No videos available.</p>';
+                return;
+            }
+
+            grid.innerHTML = videos.map(video => {
+                // Check if custom thumbnail exists, else use 1st second `#t=1.0` frame
+                const hasCustomThumb = video.thumbnail_url && video.thumbnail_url.trim() !== '';
+                
+                return `
+                    <div id="card-${video.id}" 
+                         class="video-card card-zoom relative bg-[#111217] rounded-2xl overflow-hidden border border-[#1b1e28] flex flex-col justify-between cursor-pointer"
+                         onmouseenter="startCardPreview(${video.id})"
+                         onmouseleave="stopCardPreview(${video.id})"
+                         ontouchstart="handleTouchPreview(${video.id})"
+                         onclick="openWatchPage(${video.id}, '${video.category}')">
+                        
+                        <!-- Thumbnail / 12s Preview Frame -->
+                        <div class="relative w-full aspect-video bg-black overflow-hidden">
+                            
+                            ${hasCustomThumb ? `
+                                <img id="thumb-${video.id}" src="${video.thumbnail_url}" alt="${video.title}" class="w-full h-full object-cover">
+                            ` : ''}
+
+                            <!-- Video Engine: If no thumb, #t=1.0 shows 1st second snapshot natively! -->
+                            <video 
+                                id="preview-${video.id}"
+                                src="${video.video_url}#t=1.0"
+                                muted 
+                                playsinline 
+                                preload="metadata"
+                                class="w-full h-full object-cover ${hasCustomThumb ? 'hidden' : ''} pointer-events-none"
+                            ></video>
+
+                            <!-- 18+ / Quality Badge -->
+                            <div class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur px-2 py-0.5 rounded text-[9px] font-black text-rose-400 uppercase border border-rose-500/20">
+                                ${(video.category || '').toLowerCase() === '18+' ? '18+ RAW' : 'HD'}
+                            </div>
+
+                            <!-- 12s Preview Badge (Shown during Hover/Touch) -->
+                            <div id="badge-${video.id}" class="hidden absolute bottom-2.5 right-2.5 flex items-center gap-1.5 bg-black/80 backdrop-blur px-2 py-0.5 rounded-lg border border-white/10">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                <span class="text-[9px] font-bold text-white uppercase">12s Preview</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Metadata -->
+                        <div class="p-4 flex flex-col justify-between flex-grow">
+                            <h3 class="text-sm font-bold text-gray-200 line-clamp-2 leading-snug hover:text-rose-400 transition">${video.title}</h3>
+                            
+                            <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#1b1e28] text-xs text-gray-400">
+                                <span class="text-[10px] font-bold bg-[#181a24] text-gray-300 px-2 py-0.5 rounded uppercase tracking-wider">${video.category || 'General'}</span>
+                                
+                                <div class="flex items-center gap-3 text-[11px] font-semibold">
+                                    <span>👁️ ${video.views || 0}</span>
+                                    <span class="text-rose-500">❤️ ${video.likes || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================================
+        // 7. Touch & Hover Preview Engine (12 Seconds Loop)
+        // ==========================================================
+        function startCardPreview(id) {
+            const card = document.getElementById(`card-${id}`);
+            const video = document.getElementById(`preview-${id}`);
+            const thumb = document.getElementById(`thumb-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+
+            if (!card || !video) return;
+
+            card.classList.add('active-preview');
+            if (badge) badge.classList.remove('hidden');
+            if (thumb) thumb.classList.add('hidden');
+            video.classList.remove('hidden');
+
+            video.currentTime = 0;
+            video.play().catch(() => {});
+            video.ontimeupdate = () => {
+                if (video.currentTime >= 12) video.currentTime = 0;
+            };
+        }
+
+        function stopCardPreview(id) {
+            const card = document.getElementById(`card-${id}`);
+            const video = document.getElementById(`preview-${id}`);
+            const thumb = document.getElementById(`thumb-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+
+            if (!card || !video) return;
+
+            card.classList.remove('active-preview');
+            if (badge) badge.classList.add('hidden');
+            if (thumb) thumb.classList.remove('hidden');
+
+            video.pause();
+            video.currentTime = 1.0; // Reset back to 1st second snapshot
+        }
+
+        let touchTimer = null;
+        function handleTouchPreview(id) {
+            startCardPreview(id);
+            clearTimeout(touchTimer);
+            touchTimer = setTimeout(() => stopCardPreview(id), 12000);
+        }
+
+        // ==========================================================
+        // 8. Open Watch Page + Algorithmic Tracking + Dynamic Ad Trigger
+        // ==========================================================
+        function openWatchPage(id, category) {
+            // Track user interest for future recommendations
+            try {
+                let userInterests = JSON.parse(localStorage.getItem('user_interests')) || {};
+                userInterests[category] = (userInterests[category] || 0) + 1;
+                localStorage.setItem('user_interests', JSON.stringify(userInterests));
+            } catch(e) {}
+
+            // Trigger Dynamic Adsterra Ad
+            try {
+                if (dynamicAdLink) window.open(dynamicAdLink, '_blank');
+            } catch(e) {}
+
+            // Navigate
+            window.location.href = `watch.html?id=${id}`;
+        }
+
+        // Search Engine
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderVideos(rawVideoList.filter(v => v.title.toLowerCase().includes(query)));
+        }
+
+        // Category Filter
+        function filterVideos(cat, btn) {
+            document.querySelectorAll('.cat-pill').forEach(b => {
+                b.className = 'cat-pill bg-[#12141c] hover:bg-[#1a1e2a] border border-[#1b1e28] text-gray-300 px-5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition';
+            });
+            btn.className = 'cat-pill active bg-rose-600 text-white px-5 py-2 rounded-xl text-xs font-bold whitespace-nowrap shadow-lg shadow-rose-600/30 transition';
+
+            if (cat === 'all') {
+                renderVideos(algorithmicFeed);
+            } else {
+                renderVideos(rawVideoList.filter(v => (v.category || '').toLowerCase() === cat.toLowerCase()));
+            }
+        }
+
+        // Initialize Feed
+        initFeed();
+    </script>
+</body>
+</html>
