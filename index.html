@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ========================================== -->
+    <!-- Professional 18+ SEO & Indexing Meta Tags -->
+    <!-- ========================================== -->
+    <title>MiniHub - Trending 18+ Cinema & Exclusive Leaks</title>
+    <meta name="description" content="Watch trending 18+ adult cinema, exclusive video clips, leaks and entertainment in Ultra HD quality.">
+    <meta name="keywords" content="18+ videos, viral leaks, adult cinema, uncensored clips, trending videos, hd movies">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1">
+    <meta name="rating" content="RTA-5042-1996-1400-1579-1604-AVG">
+    <meta name="rating" content="adult">
+
+    <!-- Open Graph (Facebook / Telegram / WhatsApp Preview) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MiniHub - Trending 18+ Cinema & Viral Video Network">
+    <meta property="og:description" content="Explore uncensored adult clips, news, and cinema. Stream instantly in Ultra HD.">
+    <meta property="og:site_name" content="MiniHub">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MiniHub - Trending 18+ Cinema">
+    <meta name="twitter:description" content="Watch uncensored streaming clips in Ultra HD.">
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS with Dark Mode Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#e11d48',
+                            dark: '#07080b',
+                            cardDark: '#11131a',
+                            borderDark: '#1b1f2b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            font-family: 'Outfit', sans-serif;
+        }
+        /* Custom Smooth Transitions */
+        .theme-transition {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        /* Skeleton Shimmer Loading Effect */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .skeleton::after {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0) 100%);
+            animation: shimmer 1.5s infinite;
+            content: '';
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-[#07080b] dark:text-gray-100 theme-transition selection:bg-rose-600 selection:text-white pb-24">
+
+    <!-- Top 18+ Warning Ribbon -->
+    <div class="bg-gradient-to-r from-red-950 via-rose-600 to-black text-[10px] font-black tracking-widest text-center py-1 uppercase text-white border-b border-rose-800/40">
+        🔞 18+ MATURE CONTENT &bull; ADULTS ONLY &bull; ULTRA HD STREAMING
+    </div>
+
+    <!-- Sticky Glass Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#07080b]/90 backdrop-blur-xl border-b border-gray-200 dark:border-[#1b1f2b] px-4 lg:px-10 py-3 theme-transition">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2 shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center shadow-lg shadow-rose-600/30">
+                    <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-tight leading-none">MINI<span class="text-rose-600">HUB</span></span>
+                    <span class="block text-[8px] font-bold uppercase tracking-widest text-rose-500">18+ CINEMA</span>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="relative flex-1 max-w-md hidden sm:block">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    oninput="handleLiveSearch()" 
+                    placeholder="Search videos, actors, categories..." 
+                    class="w-full bg-gray-100 dark:bg-[#12141c] border border-gray-300 dark:border-[#1b1f2b] focus:border-rose-500 text-xs rounded-full pl-9 pr-4 py-2 outline-none transition text-gray-800 dark:text-white placeholder-gray-500"
+                >
+                <svg class="w-3.5 h-3.5 text-gray-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+
+            <!-- Right Controls: Theme Toggle & Refresh -->
+            <div class="flex items-center gap-2">
+                <!-- ডার্ক / লাইট মোড টগল বাটন -->
+                <button 
+                    onclick="toggleThemeMode()" 
+                    title="Toggle Theme" 
+                    class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-200 dark:bg-[#12141c] border border-gray-300 dark:border-[#1b1f2b] text-gray-700 dark:text-amber-400 hover:scale-105 transition"
+                >
+                    <!-- Sun Icon (Light Mode) -->
+                    <svg id="sunIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <!-- Moon Icon (Dark Mode) -->
+                    <svg id="moonIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+
+                <!-- Algorithm Feed Refresh -->
+                <button onclick="fetchVideos(true)" class="flex items-center gap-1.5 text-xs font-bold bg-gray-200 dark:bg-[#12141c] hover:bg-gray-300 dark:hover:bg-[#1a1e2a] border border-gray-300 dark:border-[#1b1f2b] text-gray-800 dark:text-gray-300 px-3.5 py-2 rounded-xl transition">
+                    <svg class="w-3.5 h-3.5 text-rose-600 animate-spin-reverse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span class="hidden md:inline">For You</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories / Algorithmic Pills -->
+    <section class="max-w-7xl mx-auto px-4 lg:px-10 mt-4">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <button onclick="filterVideos('all', this)" class="cat-pill active bg-rose-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-600/30 transition">For You</button>
+            <button onclick="filterVideos('18+', this)" class="cat-pill bg-gray-200 dark:bg-[#12141c] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2b] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">🔥 18+ Unrated</button>
+            <button onclick="filterVideos('entertainment', this)" class="cat-pill bg-gray-200 dark:bg-[#12141c] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2b] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">Entertainment</button>
+            <button onclick="filterVideos('news', this)" class="cat-pill bg-gray-200 dark:bg-[#12141c] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2b] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">News & Leaks</button>
+        </div>
+    </section>
+
+    <!-- Main Fast Video Grid -->
+    <main class="max-w-7xl mx-auto px-4 lg:px-10 mt-4">
+        <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <!-- Skeleton Shimmer Placeholders will render here dynamically -->
+        </div>
+
+        <!-- Load More (Pagination) -->
+        <div class="text-center mt-10">
+            <button id="loadMoreBtn" onclick="loadMoreVideos()" class="hidden bg-gray-200 dark:bg-[#12141c] hover:bg-rose-600 hover:text-white text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2b] font-bold text-xs px-8 py-3 rounded-2xl transition shadow-lg">
+                Load More Videos ▾
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================================
+        // 1. Database Credentials & Setup
+        // ==========================================================
+        const SUPABASE_URL = "https://apeuuzhfjqrmresuorlu.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7yAPnv1oxgzk33rLXLLVfA_hgB77o2i";
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let dynamicAdLink = "https://www.profitableratecpmnetwork.com/mauri6e1f7?key=3f0fd74c9f3bf54e626c46f57f001477";
+        let rawVideoStore = [];
+        let algorithmicFeed = [];
+        let currentPage = 0;
+        const PAGE_SIZE = 12;
+
+        // Security: Disable Right-Click and Common Inspect Keys
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'c'))) e.preventDefault();
+        });
+
+        // ==========================================================
+        // 2. Dark / Light Mode Controller
+        // ==========================================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme_mode') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('moonIcon').classList.remove('hidden');
+                document.getElementById('sunIcon').classList.add('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.getElementById('sunIcon').classList.remove('hidden');
+                document.getElementById('moonIcon').classList.add('hidden');
+            }
+        }
+
+        function toggleThemeMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme_mode', isDark ? 'dark' : 'light');
+            initTheme();
+        }
+
+        // ==========================================================
+        // 3. YouTube/TikTok-Style Recommendation Algorithm 2.0
+        // ==========================================================
+        function runRecommendationEngine(videos) {
+            let interests = {};
+            try {
+                interests = JSON.parse(localStorage.getItem('user_interests')) || {};
+            } catch(e) {}
+
+            return [...videos].sort((a, b) => {
+                const aCatWeight = interests[a.category] || 0;
+                const bCatWeight = interests[b.category] || 0;
+
+                // Weighted Score Formula:
+                // Category Affinity * 3.5 + Views Weight * 0.05 + Likes * 0.2 + Random Entropy for Discovery
+                const scoreA = (aCatWeight * 3.5) + ((a.views || 0) * 0.05) + ((a.likes || 0) * 0.2) + (Math.random() * 4);
+                const scoreB = (bCatWeight * 3.5) + ((b.views || 0) * 0.05) + ((b.likes || 0) * 0.2) + (Math.random() * 4);
+
+                return scoreB - scoreA;
+            });
+        }
+
+        // ==========================================================
+        // 4. Skeleton Shimmer Loading Placeholder
+        // ==========================================================
+        function renderSkeletons() {
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = Array.from({ length: 8 }).map(() => `
+                <div class="bg-gray-200 dark:bg-[#11131a] rounded-2xl overflow-hidden border border-gray-300 dark:border-[#1b1f2b] p-3 space-y-3">
+                    <div class="w-full aspect-video rounded-xl skeleton"></div>
+                    <div class="h-4 w-3/4 rounded skeleton"></div>
+                    <div class="flex justify-between items-center pt-2">
+                        <div class="h-3 w-1/4 rounded skeleton"></div>
+                        <div class="h-3 w-1/4 rounded skeleton"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================================
+        // 5. High-Speed Paginated Video Fetcher
+        // ==========================================================
+        async function fetchVideos(isInitial = false) {
+            if (isInitial) {
+                currentPage = 0;
+                rawVideoStore = [];
+                renderSkeletons();
+            }
+
+            const from = currentPage * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .order('id', { ascending: false })
+                    .range(from, to);
+
+                if (error) throw error;
+                const newVideos = data || [];
+
+                if (isInitial) {
+                    rawVideoStore = newVideos;
+                } else {
+                    rawVideoStore = [...rawVideoStore, ...newVideos];
+                }
+
+                algorithmicFeed = runRecommendationEngine(rawVideoStore);
+                renderVideoCards(algorithmicFeed);
+
+                // Control "Load More" visibility
+                const btn = document.getElementById('loadMoreBtn');
+                if (newVideos.length === PAGE_SIZE) {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+
+            } catch (err) {
+                console.error(err);
+                if (isInitial) {
+                    document.getElementById('videoGrid').innerHTML = '<p class="col-span-full text-center py-16 text-rose-500 text-xs">Failed to load feed. Check database connection.</p>';
+                }
+            }
+        }
+
+        function loadMoreVideos() {
+            currentPage++;
+            fetchVideos(false);
+        }
+
+        // ==========================================================
+        // 6. Zero-Bandwidth Card Renderer with Smart Thumbnails
+        // ==========================================================
+        function renderVideoCards(videos) {
+            const grid = document.getElementById('videoGrid');
+            if (!videos || videos.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center py-16 text-gray-500 text-xs">No videos found.</p>';
+                return;
+            }
+
+            grid.innerHTML = videos.map(video => {
+                const hasCustomThumb = video.thumbnail_url && video.thumbnail_url.trim() !== '';
+
+                return `
+                    <div id="card-${video.id}" 
+                         class="video-card bg-white dark:bg-[#11131a] rounded-2xl overflow-hidden border border-gray-200 dark:border-[#1b1f2b] hover:border-rose-500/60 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer"
+                         onmouseenter="startSmartPreview(${video.id}, '${video.video_url}')"
+                         onmouseleave="stopSmartPreview(${video.id})"
+                         ontouchstart="handleTouchPreview(${video.id}, '${video.video_url}')"
+                         onclick="openWatchPage(${video.id}, '${video.category}')">
+                        
+                        <!-- Thumbnail Frame -->
+                        <div class="relative w-full aspect-video bg-black overflow-hidden">
+                            
+                            <!-- Static Poster (Uses 0 MB Video Bandwidth) -->
+                            <div id="poster-${video.id}" class="w-full h-full flex items-center justify-center bg-gradient-to-tr from-black via-zinc-900 to-black">
+                                ${hasCustomThumb ? `
+                                    <img src="${video.thumbnail_url}" loading="lazy" class="w-full h-full object-cover">
+                                ` : `
+                                    <div class="flex flex-col items-center justify-center text-gray-500 gap-1.5">
+                                        <div class="w-10 h-10 rounded-full bg-rose-600/10 border border-rose-500/30 flex items-center justify-center text-rose-500">
+                                            <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                        <span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">18+ Ultra HD</span>
+                                    </div>
+                                `}
+                            </div>
+
+                            <!-- On-Demand Video: SRC is empty until user hovers/touches! -->
+                            <video 
+                                id="preview-${video.id}" 
+                                muted 
+                                playsinline 
+                                preload="none" 
+                                class="hidden w-full h-full object-cover pointer-events-none"
+                            ></video>
+
+                            <!-- 18+ Quality Badge -->
+                            <div class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur px-2 py-0.5 rounded text-[8px] font-black text-rose-400 uppercase border border-rose-500/20">
+                                ${(video.category || '').toLowerCase() === '18+' ? '18+ RAW' : 'HD'}
+                            </div>
+
+                            <div id="badge-${video.id}" class="hidden absolute bottom-2 right-2 flex items-center gap-1 bg-black/80 backdrop-blur px-2 py-0.5 rounded border border-white/10">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                <span class="text-[8px] font-bold text-white uppercase">Preview</span>
+                            </div>
+                        </div>
+
+                        <!-- Video Info -->
+                        <div class="p-3.5 flex flex-col justify-between flex-grow">
+                            <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100 line-clamp-2 leading-snug hover:text-rose-500 transition">${video.title}</h3>
+                            
+                            <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-gray-100 dark:border-[#1b1f2b] text-[11px] text-gray-500 dark:text-gray-400">
+                                <span class="text-[9px] font-bold bg-gray-100 dark:bg-[#181a24] text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded uppercase tracking-wider">${video.category || 'General'}</span>
+                                <div class="flex items-center gap-2 text-[10px] font-medium">
+                                    <span>👁️ ${video.views || 0}</span>
+                                    <span class="text-rose-500 font-bold">❤️ ${video.likes || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================================
+        // 7. On-Demand Preview Handlers
+        // ==========================================================
+        function startSmartPreview(id, videoUrl) {
+            const video = document.getElementById(`preview-${id}`);
+            const poster = document.getElementById(`poster-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+            if (!video) return;
+
+            if (badge) badge.classList.remove('hidden');
+
+            if (!video.src || video.src === window.location.href) {
+                video.src = videoUrl;
+            }
+
+            video.classList.remove('hidden');
+            if (poster) poster.classList.add('hidden');
+
+            video.currentTime = 0;
+            video.play().catch(() => {});
+            video.ontimeupdate = () => {
+                if (video.currentTime >= 12) video.currentTime = 0;
+            };
+        }
+
+        function stopSmartPreview(id) {
+            const video = document.getElementById(`preview-${id}`);
+            const poster = document.getElementById(`poster-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+            if (!video) return;
+
+            if (badge) badge.classList.add('hidden');
+            video.pause();
+            video.currentTime = 0;
+            video.classList.add('hidden');
+            if (poster) poster.classList.remove('hidden');
+        }
+
+        let touchTimeout = null;
+        function handleTouchPreview(id, videoUrl) {
+            startSmartPreview(id, videoUrl);
+            clearTimeout(touchTimeout);
+            touchTimeout = setTimeout(() => stopSmartPreview(id), 12000);
+        }
+
+        // ==========================================================
+        // 8. Navigation & Search Filter
+        // ==========================================================
+        function openWatchPage(id, category) {
+            try {
+                let interests = JSON.parse(localStorage.getItem('user_interests')) || {};
+                interests[category] = (interests[category] || 0) + 1;
+                localStorage.setItem('user_interests', JSON.stringify(interests));
+            } catch(e) {}
+
+            try {
+                if (dynamicAdLink) window.open(dynamicAdLink, '_blank');
+            } catch(e) {}
+
+            window.location.href = `watch.html?id=${id}`;
+        }
+
+        function handleLiveSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderVideoCards(rawVideoStore.filter(v => v.title.toLowerCase().includes(q)));
+        }
+
+        function filterVideos(cat, btn) {
+            document.querySelectorAll('.cat-pill').forEach(b => {
+                b.className = 'cat-pill bg-gray-200 dark:bg-[#12141c] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2b] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition';
+            });
+            btn.className = 'cat-pill active bg-rose-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-600/30 transition';
+
+            if (cat === 'all') {
+                renderVideoCards(algorithmicFeed);
+            } else {
+                renderVideoCards(rawVideoStore.filter(v => (v.category || '').toLowerCase() === cat.toLowerCase()));
+            }
+        }
+
+        // Fetch Dynamic Ads from Database
+        async function fetchAdSettings() {
+            try {
+                const { data } = await supabaseClient.from('site_settings').select('value').eq('key', 'adsterra_link').single();
+                if (data && data.value) dynamicAdLink = data.value;
+            } catch(e) {}
+        }
+
+        // Init App
+        initTheme();
+        fetchAdSettings();
+        fetchVideos(true);
+    </script>
+</body>
+</html>
