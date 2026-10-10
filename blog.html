@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>MiniHub Blog - Trending 18+ Stories, Leaks & News</title>
+    
+    <!-- Neon Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23e11d48'/%3E%3Cstop offset='100%25' stop-color='%23ff0055'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='25' fill='url(%23g)'/%3E%3Cpolygon points='38,28 75,50 38,72' fill='%23ffffff'/%3E%3C/svg%3E">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Read the latest viral 18+ stories, celebrity gossip, drama recaps, and uncensored news updates on MiniHub.">
+    <meta name="keywords" content="viral stories, 18+ gossip, adult news, celebrity leaks, scandal updates">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <meta name="rating" content="RTA-5042-1996-1400-1579-1604-AVG">
+    <meta name="rating" content="adult">
+
+    <!-- Semantic Blog Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "MiniHub Stories & News",
+      "description": "Trending 18+ stories, viral leaks, and entertainment articles."
+    }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS with Dark Mode -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#e11d48',
+                            dark: '#050508',
+                            cardDark: '#0c0e14',
+                            borderDark: '#171a24'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .theme-transition {
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+        .card-zoom {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-zoom:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+            border-color: rgba(225, 29, 72, 0.6) !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-[#050508] dark:text-gray-100 theme-transition selection:bg-rose-600 selection:text-white pb-24">
+
+    <!-- Top Ribbon -->
+    <div class="bg-gradient-to-r from-red-950 via-rose-600 to-black text-[10px] font-black tracking-widest text-center py-1 uppercase text-white border-b border-rose-800/40">
+        📰 EXCLUSIVE STORIES &bull; VIRAL LEAKS &bull; UNCENSORED NEWS
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#050508]/90 backdrop-blur-xl border-b border-gray-200 dark:border-[#171a24] px-3.5 lg:px-10 py-2.5 theme-transition">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            
+            <a href="index.html" class="flex items-center gap-2 shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center shadow-lg shadow-rose-600/30">
+                    <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-tight leading-none">MINI<span class="text-rose-600">HUB</span></span>
+                    <span class="block text-[8px] font-bold uppercase tracking-widest text-rose-500">STORIES & NEWS</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-4 text-xs font-bold">
+                <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-rose-600 transition">🎬 Videos</a>
+                <a href="blog.html" class="text-rose-600">📰 Stories & Blog</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <!-- Theme Toggle -->
+                <button 
+                    onclick="toggleThemeMode()" 
+                    title="Toggle AMOLED Night Mode" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-200 dark:bg-[#0e111a] border border-gray-300 dark:border-[#1b1f2e] text-gray-700 dark:text-amber-400 hover:border-rose-500 transition shadow-sm"
+                >
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeLabel" class="text-[10px] font-extrabold uppercase tracking-wider hidden xs:inline">Night</span>
+                </button>
+
+                <a href="index.html" class="text-xs font-bold bg-gray-200 dark:bg-[#0e111a] hover:bg-gray-300 dark:hover:bg-[#151926] border border-gray-300 dark:border-[#1b1f2e] text-gray-800 dark:text-gray-300 px-3 py-1.5 rounded-xl transition">
+                    ← Back to Cinema
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Spotlight Article Section -->
+    <section class="max-w-7xl mx-auto px-3.5 lg:px-10 mt-5">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900 dark:text-white">Trending Stories & Viral Leaks</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Explore uncensored adult celebrity news, full viral event recaps, and video breakdown stories.</p>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none mb-4">
+            <button onclick="filterBlogs('all', this)" class="cat-pill active bg-rose-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-600/30 transition">All Stories</button>
+            <button onclick="filterBlogs('viral', this)" class="cat-pill bg-gray-200 dark:bg-[#0e111a] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2e] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">🔥 Viral Leaks</button>
+            <button onclick="filterBlogs('gossip', this)" class="cat-pill bg-gray-200 dark:bg-[#0e111a] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2e] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">Gossip & Drama</button>
+            <button onclick="filterBlogs('news', this)" class="cat-pill bg-gray-200 dark:bg-[#0e111a] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2e] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition">News Updates</button>
+        </div>
+
+        <!-- Blog Cards Grid -->
+        <div id="blogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <p class="col-span-full py-16 text-center text-xs text-gray-500 animate-pulse">Loading viral stories...</p>
+        </div>
+    </section>
+
+    <script>
+        // ==========================================================
+        // 1. Obfuscated Database Connection
+        // ==========================================================
+        const _k0 = "aHR0cHM6Ly9hcGV1dXpoZmpxcm1yZXN1b3JsdS5zdXBhYmFzZS5jbw==";
+        const _k1 = "c2JfcHVibGlzaGFibGVfN3lBUG52MW94Z3prMzNyTFhMTFZmQV9oZ0I3N28yaQ==";
+        const _d = (s) => atob(s);
+        const supabaseClient = window.supabase.createClient(_d(_k0), _d(_k1));
+
+        let allBlogsStore = [];
+
+        // Anti-Inspect Security
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'c'))) e.preventDefault();
+        });
+
+        // Theme Mode Controller
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme_mode') || 'dark';
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+                icon.innerText = '☀️';
+                label.innerText = 'Light';
+            } else {
+                document.documentElement.classList.add('dark');
+                icon.innerText = '🌙';
+                label.innerText = 'Night';
+            }
+        }
+
+        function toggleThemeMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme_mode', isDark ? 'dark' : 'light');
+            initTheme();
+        }
+
+        // ==========================================================
+        // 2. Load Blogs from Database
+        // ==========================================================
+        async function fetchBlogs() {
+            const grid = document.getElementById('blogGrid');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('blogs')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+                allBlogsStore = data || [];
+
+                if (allBlogsStore.length === 0) {
+                    grid.innerHTML = '<p class="col-span-full py-16 text-center text-xs text-gray-500">No blog articles published yet. Publish your first article from Admin!</p>';
+                    return;
+                }
+
+                renderBlogCards(allBlogsStore);
+
+            } catch(err) {
+                console.error(err);
+                grid.innerHTML = '<p class="col-span-full py-16 text-center text-xs text-rose-500">Failed to load articles.</p>';
+            }
+        }
+
+        function renderBlogCards(blogs) {
+            const grid = document.getElementById('blogGrid');
+            grid.innerHTML = blogs.map(blog => {
+                const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 350'%3E%3Crect width='600' height='350' fill='%2311131a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%23e11d48'%3E%F0%9F%94%A5 MiniHub Viral Story%3C/text%3E%3C/svg%3E";
+                const img = blog.featured_image && blog.featured_image.trim() !== '' ? blog.featured_image : defaultImage;
+                const dateFormatted = new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                return `
+                    <article class="card-zoom bg-white dark:bg-[#0c0e14] rounded-2xl overflow-hidden border border-gray-200 dark:border-[#171a24] hover:border-rose-500/60 shadow-sm flex flex-col justify-between cursor-pointer" onclick="openArticle(${blog.id})">
+                        <div class="relative w-full aspect-[16/10] bg-black overflow-hidden">
+                            <img src="${img}" alt="${blog.title}" loading="lazy" class="w-full h-full object-cover">
+                            <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur px-2.5 py-0.5 rounded text-[9px] font-black text-rose-400 uppercase tracking-wider border border-rose-500/20">
+                                ${blog.category || 'Viral'}
+                            </span>
+                        </div>
+
+                        <div class="p-4 flex flex-col justify-between flex-grow">
+                            <div>
+                                <div class="flex items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400 mb-1.5 font-medium">
+                                    <span>📅 ${dateFormatted}</span>
+                                    <span>&bull;</span>
+                                    <span>⏱️ 3 min read</span>
+                                </div>
+                                <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100 line-clamp-2 leading-snug hover:text-rose-500 transition">${blog.title}</h2>
+                                <p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mt-2 leading-relaxed">
+                                    ${(blog.content || '').replace(/<[^>]*>?/gm, '').substring(0, 110)}...
+                                </p>
+                            </div>
+
+                            <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-[#171a24] text-[11px] text-gray-500">
+                                <span class="text-rose-600 font-extrabold flex items-center gap-1">Read Full Story →</span>
+                                <span>👁️ ${blog.views || 0} views</span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function openArticle(id) {
+            window.location.href = `article.html?id=${id}`;
+        }
+
+        function filterBlogs(cat, btn) {
+            document.querySelectorAll('.cat-pill').forEach(b => {
+                b.className = 'cat-pill bg-gray-200 dark:bg-[#0e111a] text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-[#1b1f2e] px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition';
+            });
+            btn.className = 'cat-pill active bg-rose-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-600/30 transition';
+
+            if (cat === 'all') renderBlogCards(allBlogsStore);
+            else renderBlogCards(allBlogsStore.filter(b => (b.category || '').toLowerCase() === cat.toLowerCase()));
+        }
+
+        initTheme();
+        fetchBlogs();
+    </script>
+</body>
+</html>
