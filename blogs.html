@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro HTML Blog Studio - MiniHub Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Hind Siliguri', 'Outfit', sans-serif; background-color: #050508; color: #f3f4f6; }</style>
+</head>
+<body class="flex flex-col lg:flex-row min-h-screen">
+
+    <div id="sidebarMount" class="shrink-0"></div>
+
+    <main class="flex-1 p-5 lg:p-8 space-y-6 overflow-y-auto">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-black text-white flex items-center gap-2">
+                    <span>⚡</span> Pro HTML Blog Studio
+                </h1>
+                <p class="text-xs text-gray-400 mt-0.5">এখানে সরাসরি HTML কোড দিয়ে আর্টিকেলের মাঝে ভিডিও, কাস্টম অ্যাড বাটন ও স্টোরি ডিজাইন করে পাবলিশ করুন।</p>
+            </div>
+            <a href="https://minihub-cinema.kstridoy013.workers.dev/blog.html" target="_blank" class="text-xs font-bold bg-[#11141d] hover:bg-[#1a1f2e] border border-[#1b2130] text-rose-400 px-3 py-1.5 rounded-xl transition">
+                লাইভ ব্লগ পেজ ↗
+            </a>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-[#0c0e14] p-5 lg:p-6 rounded-3xl border border-[#171a24] space-y-4">
+            <form onsubmit="handlePublishBlog(event)" class="space-y-4 text-xs">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-gray-400 font-bold mb-1">ব্লগের আকর্ষণীয় টাইটেল *</label>
+                        <input type="text" id="blogTitle" required placeholder="হেডলাইন লিখুন..." class="w-full bg-[#050508] border border-[#1c2130] focus:border-rose-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 font-bold mb-1">ক্যাটাগরি</label>
+                        <select id="blogCategory" class="w-full bg-[#050508] border border-[#1c2130] focus:border-rose-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+                            <option value="viral">🔥 ভাইরাল স্ক্যান্ডাল (Viral)</option>
+                            <option value="gossip">গসিপ ও নাটকীয়তা (Gossip)</option>
+                            <option value="news">নিউজ ও খবর (News)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-400 font-bold mb-1">ফিচারড থাম্বনেইল ছবি লিঙ্ক (URL)</label>
+                    <input type="url" id="blogImage" placeholder="https://iili.io/nMjjdnR.jpg" class="w-full bg-[#050508] border border-[#1c2130] focus:border-rose-500 rounded-xl px-3.5 py-2.5 text-white outline-none font-mono">
+                </div>
+
+                <!-- কুইক HTML ইনসার্ট টুলবার -->
+                <div class="p-3 bg-[#08090e] border border-[#161a26] rounded-2xl space-y-2">
+                    <span class="text-[11px] font-bold text-gray-400 block">কুইক HTML টুলবার (লেখার ভেতর ১-ক্লিকে উপাদান যুক্ত করুন):</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="insertVideoPlayerSnippet()" class="bg-[#121624] hover:bg-rose-600 text-gray-200 hover:text-white px-3 py-1.5 rounded-lg border border-[#1d2336] transition flex items-center gap-1 font-bold">
+                            🎬 + ভিডিও প্লেয়ার কোড
+                        </button>
+                        <button type="button" onclick="insertAdBannerSnippet()" class="bg-[#121624] hover:bg-rose-600 text-gray-200 hover:text-white px-3 py-1.5 rounded-lg border border-[#1d2336] transition flex items-center gap-1 font-bold">
+                            💰 + Adsterra ব্যানার কোড
+                        </button>
+                        <button type="button" onclick="insertHeadingSnippet()" class="bg-[#121624] hover:bg-rose-600 text-gray-200 hover:text-white px-3 py-1.5 rounded-lg border border-[#1d2336] transition font-bold">
+                            📌 + হেডিং (H2)
+                        </button>
+                        <button type="button" onclick="insertQuoteSnippet()" class="bg-[#121624] hover:bg-rose-600 text-gray-200 hover:text-white px-3 py-1.5 rounded-lg border border-[#1d2336] transition font-bold">
+                            💬 + কোটেশন বক্স
+                        </button>
+                        <button type="button" onclick="autoWriteHTMLWithAI()" id="aiBtn" class="bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-black border border-amber-500/30 px-3 py-1.5 rounded-lg transition font-bold ml-auto flex items-center gap-1">
+                            🤖 AI দিয়ে ফুল HTML লেখাও
+                        </button>
+                    </div>
+                </div>
+
+                <!-- HTML এডিটর ও লাইভ প্রিভিউ ট্যাব -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="switchEditorTab('code')" id="codeTabBtn" class="bg-rose-600 text-white font-bold px-4 py-1 rounded-lg">HTML কোড লিখুন</button>
+                            <button type="button" onclick="switchEditorTab('preview')" id="previewTabBtn" class="bg-[#11141d] text-gray-400 font-bold px-4 py-1 rounded-lg">লাইভ প্রিভিউ দেখুন 👁️</button>
+                        </div>
+                    </div>
+
+                    <!-- টেক্সট এরিয়া -->
+                    <textarea 
+                        id="blogContent" 
+                        rows="12" 
+                        required 
+                        placeholder="এখানে সরাসরি HTML কোড বা সাধারণ লেখা পেস্ট করুন..." 
+                        class="w-full bg-[#050508] border border-[#1c2130] focus:border-rose-500 rounded-2xl p-4 text-xs text-gray-200 outline-none font-mono leading-relaxed"
+                    ></textarea>
+
+                    <!-- লাইভ প্রিভিউ বক্স -->
+                    <div id="previewBox" class="hidden w-full bg-[#050508] border border-[#1c2130] rounded-2xl p-5 text-sm text-gray-200 space-y-4 max-h-[350px] overflow-y-auto">
+                        <!-- লাইভ প্রিভিউ এখানে ফুটে উঠবে -->
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end pt-2">
+                    <button type="submit" id="pubBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg shadow-rose-600/30 flex items-center gap-2">
+                        <span>🚀</span> সরাসরি সাইটে পাবলিশ করুন
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- প্রকাশিত ব্লগ লিস্ট -->
+        <div class="bg-[#0c0e14] p-5 rounded-3xl border border-[#171a24]">
+            <h2 class="text-sm font-bold text-white mb-3">📰 ইতিমধ্যে প্রকাশিত ব্লগসমূহ</h2>
+            <div id="blogListContainer" class="space-y-2.5">
+                <p class="text-xs text-gray-500 py-4 text-center">লোড হচ্ছে...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+        renderAdminLayout('blogs');
+
+        const contentArea = document.getElementById('blogContent');
+        const previewBox = document.getElementById('previewBox');
+
+        // ট্যাব সুইচ
+        function switchEditorTab(tab) {
+            if (tab === 'code') {
+                contentArea.classList.remove('hidden');
+                previewBox.classList.add('hidden');
+                document.getElementById('codeTabBtn').className = "bg-rose-600 text-white font-bold px-4 py-1 rounded-lg";
+                document.getElementById('previewTabBtn').className = "bg-[#11141d] text-gray-400 font-bold px-4 py-1 rounded-lg";
+            } else {
+                contentArea.classList.add('hidden');
+                previewBox.classList.remove('hidden');
+                previewBox.innerHTML = contentArea.value || '<p class="text-gray-500 italic">এখনো কোনো কনটেন্ট লেখা হয়নি...</p>';
+                document.getElementById('previewTabBtn').className = "bg-rose-600 text-white font-bold px-4 py-1 rounded-lg";
+                document.getElementById('codeTabBtn').className = "bg-[#11141d] text-gray-400 font-bold px-4 py-1 rounded-lg";
+            }
+        }
+
+        // ==========================================================
+        // কুইক HTML স্নsnippet ইনসার্ট ফাংশনসমূহ
+        // ==========================================================
+        function insertSnippet(html) {
+            const start = contentArea.selectionStart;
+            const end = contentArea.selectionEnd;
+            contentArea.value = contentArea.value.substring(0, start) + "\n" + html + "\n" + contentArea.value.substring(end);
+            contentArea.focus();
+        }
+
+        function insertVideoPlayerSnippet() {
+            const vUrl = prompt("সরাসরি .MP4 ভিডিওর লিঙ্ক দিন:", "https://kappa.lol/84OT7V.mp4");
+            const pUrl = prompt("পোস্টার ছবির লিঙ্ক দিন (ঐচ্ছিক):", "https://iili.io/nMjjdnR.jpg");
+            if (!vUrl) return;
+
+            const snippet = `
+<!-- ইন-আর্টিকেল ভিডিও প্লেয়ার -->
+<div class="my-5 w-full aspect-video bg-black rounded-2xl overflow-hidden border border-rose-500/30 shadow-2xl">
+    <video src="${vUrl}" poster="${pUrl || ''}" controls controlsList="nodownload" playsinline class="w-full h-full object-contain"></video>
+</div>`;
+            insertSnippet(snippet);
+        }
+
+        function insertAdBannerSnippet() {
+            const snippet = `
+<!-- Adsterra ক্লিকেবল ব্যানার -->
+<div onclick="openAdLink()" class="my-4 p-4 rounded-2xl bg-gradient-to-r from-red-950/60 via-[#0e111a] to-zinc-900 border border-rose-500/40 hover:border-rose-500 transition cursor-pointer flex items-center justify-between gap-3 shadow-lg">
+    <div class="flex items-center gap-3">
+        <span class="bg-rose-600 text-[10px] font-black px-2 py-0.5 rounded text-white uppercase">AD</span>
+        <p class="text-xs sm:text-sm font-bold text-gray-200">🔥 সম্পূর্ণ আনকাট প্রাইভেট ভিডিও সরাসরি দেখতে এখানে ট্যাপ করুন!</p>
+    </div>
+    <button class="bg-rose-600 text-white font-extrabold text-xs px-4 py-2 rounded-xl shrink-0 shadow">দেখুন ↗</button>
+</div>`;
+            insertSnippet(snippet);
+        }
+
+        function insertHeadingSnippet() {
+            insertSnippet(`<h2 class="text-lg font-bold text-white pt-2 border-t border-[#171a24]">এখানে হেডিং লিখুন</h2>`);
+        }
+
+        function insertQuoteSnippet() {
+            insertSnippet(`<blockquote class="p-4 bg-[#050508] border-l-4 border-rose-600 rounded-r-2xl italic text-xs sm:text-sm text-gray-400">"এখানে গুরুত্বপূর্ণ উক্তি বা ক্লাইম্যাক্স লিখুন..."</blockquote>`);
+        }
+
+        // ==========================================================
+        // এআই দিয়ে রেডিমেড HTML লেখানো
+        // ==========================================================
+        async function autoWriteHTMLWithAI() {
+            const title = document.getElementById('blogTitle').value.trim();
+            const btn = document.getElementById('aiBtn');
+            const apiKey = localStorage.getItem('gemini_api_key');
+
+            if (!title) return alert("প্রথমে উপরের ঘরে একটি টাইটেল লিখুন!");
+            if (!apiKey) return alert("প্রথমে 'AI কোল্ড-ট্রুথ' পেজে গিয়ে আপনার Gemini API Key দিয়ে আসুন!");
+
+            btn.disabled = true;
+            btn.innerText = "⏳ লিখছে...";
+
+            try {
+                const prompt = `তুমি একজন প্রফেশনাল ভাইরাল নিউজ রাইটার। বিষয়: "${title}"। এই বিষয়ের ওপর একটি আকর্ষণীয় ৩০০ শব্দের বাংলা আর্টিকেল HTML ফরম্যাটে লিখো। প্যারাগ্রাফের জন্য <p>, হেডিংয়ের জন্য <h2 class="text-lg font-bold text-white"> এবং কোনো কোটের জন্য <blockquote> ট্যাগ ব্যবহার করো। কোনো <html> বা <body> ট্যাগ দেবে না, শুধু আর্টিকেলের ভেতরের HTML ট্যাগ দেবে।`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const json = await res.json();
+                contentArea.value = json.candidates[0].content.parts[0].text.replace(/```html|```/g, '').trim();
+            } catch(e) {
+                alert("এরর: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🤖 AI দিয়ে ফুল HTML লেখাও';
+            }
+        }
+
+        // ==========================================================
+        // পাবলিশ ও ডিলিট ফাংশন
+        // ==========================================================
+        async function handlePublishBlog(e) {
+            e.preventDefault();
+            const btn = document.getElementById('pubBtn');
+            const title = document.getElementById('blogTitle').value.trim();
+            const category = document.getElementById('blogCategory').value;
+            const featured_image = document.getElementById('blogImage').value.trim();
+            const content = contentArea.value.trim();
+
+            btn.disabled = true;
+            btn.innerText = "পাবলিশ হচ্ছে...";
+
+            const slug = title.toLowerCase().replace(/[^a-zA-Z0-9\u0980-\u09FF]+/g, '-').substring(0, 35) + '-' + Date.now();
+
+            try {
+                const { error } = await supabaseClient.from('blogs').insert([{
+                    title,
+                    slug,
+                    content,
+                    featured_image,
+                    category,
+                    views: 0
+                }]);
+
+                if (error) throw error;
+
+                alert("🎉 অভিনন্দন! আপনার প্রো HTML ব্লগটি সরাসরি ওয়েবসাইটে লাইভ হয়ে গেছে!");
+                document.getElementById('blogTitle').value = '';
+                document.getElementById('blogImage').value = '';
+                contentArea.value = '';
+                switchEditorTab('code');
+                loadBlogs();
+
+            } catch (err) {
+                alert("পাবলিশ ব্যর্থ: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🚀</span> সরাসরি সাইটে পাবলিশ করুন';
+            }
+        }
+
+        async function loadBlogs() {
+            const box = document.getElementById('blogListContainer');
+            const { data } = await supabaseClient.from('blogs').select('*').order('id', { ascending: false });
+            if (!data || data.length === 0) return box.innerHTML = '<p class="text-xs text-gray-500 py-4 text-center">কোনো ব্লগ নেই</p>';
+
+            box.innerHTML = data.map(b => `
+                <div class="flex items-center justify-between p-3.5 bg-[#050508] rounded-2xl border border-[#161a26]">
+                    <div class="min-w-0 flex-1 pr-3">
+                        <h4 class="text-xs font-bold text-gray-200 line-clamp-1">${b.title}</h4>
+                        <span class="text-[10px] text-gray-500 uppercase">${b.category} &bull; 👁️ ${b.views || 0} ভিউ</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <a href="https://minihub-cinema.kstridoy013.workers.dev/article.html?id=${b.id}" target="_blank" class="text-xs text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">দেখুন ↗</a>
+                        <button onclick="deleteBlog(${b.id})" class="text-xs text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg">মুছুন</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteBlog(id) {
+            if (!confirm("আর্টিকেলটি মুছে ফেলতে চান?")) return;
+            await supabaseClient.from('blogs').delete().eq('id', id);
+            loadBlogs();
+        }
+
+        loadBlogs();
+    </script>
+</body>
+</html>
