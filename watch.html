@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stream - MiniHub</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23e11d48'/%3E%3Cpolygon points='38,28 75,50 38,72' fill='%23ffffff'/%3E%3C/svg%3E">
+    <meta name="robots" content="index, follow">
+    <meta name="rating" content="RTA-5042-1996-1400-1579-1604-AVG">
+    <meta name="rating" content="adult">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #0b0c10;
+            color: #e5e7eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        /* Animated Auto-Share Bar */
+        @keyframes bounceShare {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .share-animated {
+            animation: bounceShare 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Header -->
+    <header class="bg-[#0b0c10] border-b border-gray-800 px-4 py-3 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2">
+            <span class="w-7 h-7 bg-rose-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">▶</span>
+            <span class="text-lg font-black tracking-wider text-white">MINI<span class="text-rose-500">HUB</span></span>
+        </a>
+        <a href="index.html" class="text-xs text-gray-400 hover:text-white">← Back</a>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-3 space-y-3">
+
+        <!-- Player Container -->
+        <div class="w-full aspect-video bg-black rounded-xl overflow-hidden relative border border-gray-800">
+            <video 
+                id="mainPlayer" 
+                controls 
+                controlsList="nodownload" 
+                playsinline 
+                autoplay
+                class="w-full h-full object-contain"
+            ></video>
+
+            <!-- Loading Spinner WebP -->
+            <div id="playerLoading" class="absolute inset-0 flex items-center justify-center bg-black/80">
+                <img src="https://imghippo.nexpoint.click/7871123886/BQACAgUAAyEFAATk6e-_AAIN5mqJfAMXPgFgu3b6ZpJw3U7LxLYpAAJyDwACMm-hVQQz49tKX0kmPQQ.webp" alt="Loading" class="w-12 h-12 object-contain">
+            </div>
+        </div>
+
+        <!-- Automatic Animated Share Callout (যখন ভিডিও চলবে অটোমেটিক নাচবে) -->
+        <div id="autoShareBanner" onclick="triggerShare()" class="share-animated cursor-pointer bg-gradient-to-r from-rose-950 via-rose-900 to-[#121318] border border-rose-500/50 p-2.5 rounded-xl flex items-center justify-between shadow-lg">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🔥</span>
+                <span class="text-xs font-bold text-white">Share with friends now!</span>
+            </div>
+            <span class="bg-rose-600 text-[11px] font-bold text-white px-3 py-1 rounded-lg">Share 🚀</span>
+        </div>
+
+        <!-- Meta -->
+        <div class="bg-[#121318] border border-gray-800 p-3 rounded-xl space-y-2">
+            <h1 id="videoTitle" class="text-sm font-bold text-white">Loading...</h1>
+            <div class="flex justify-between items-center text-xs text-gray-400 pt-1 border-t border-gray-800/60">
+                <span id="videoCategory" class="uppercase text-[10px] bg-gray-800 px-2 py-0.5 rounded">Category</span>
+                <div class="flex items-center gap-3">
+                    <span id="viewCount">👁️ 0</span>
+                    <button onclick="handleLike()" id="likeBtn" class="flex items-center gap-1 text-rose-500 font-bold">
+                        <span>❤️</span> <span id="likeCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Up Next -->
+        <div class="space-y-2 pt-2">
+            <h3 class="text-xs font-bold text-gray-400 uppercase">Up Next</h3>
+            <div id="upNextList" class="space-y-2"></div>
+        </div>
+
+    </main>
+
+    <!-- Bottom-Left Blog Link -->
+    <a href="blog.html" class="fixed bottom-5 left-5 z-50 w-11 h-11 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-lg text-lg">
+        ✍️
+    </a>
+
+    <script>
+        const _k0 = "aHR0cHM6Ly9hcGV1dXpoZmpxcm1yZXN1b3JsdS5zdXBhYmFzZS5jbw==";
+        const _k1 = "c2JfcHVibGlzaGFibGVfN3lBUG52MW94Z3prMzNyTFhMTFZmQV9oZ0I3N28yaQ==";
+        const _ad0 = "aHR0cHM6Ly93d3cucHJvZml0YWJsZXJhdGVjcG1uZXR3b3JrLmNvbS9tYXVyaTZlMWY3P2tleT0zZjBmZDc0YzlmM2JmNTRlNjI2YzQ2ZjU3ZjAwMTQ3Nw==";
+
+        const _d = (s) => atob(s);
+        const supabaseClient = window.supabase.createClient(_d(_k0), _d(_k1));
+        const dynamicAdLink = _d(_ad0);
+
+        const currentId = parseInt(new URLSearchParams(window.location.search).get('id'));
+        let currentVideo = null;
+        let nextId = null;
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        async function loadVideo() {
+            if (!currentId) { window.location.href = 'index.html'; return; }
+
+            try {
+                const { data } = await supabaseClient.from('videos').select('*').eq('id', currentId).single();
+                if (!data) return;
+                currentVideo = data;
+
+                const player = document.getElementById('mainPlayer');
+                player.src = currentVideo.video_url;
+                document.getElementById('videoTitle').innerText = currentVideo.title;
+                document.getElementById('videoCategory').innerText = currentVideo.category || '18+';
+                document.getElementById('likeCount').innerText = currentVideo.likes || 0;
+                document.getElementById('viewCount').innerText = `👁️ ${(currentVideo.views || 0) + 1}`;
+
+                player.onloadeddata = () => {
+                    document.getElementById('playerLoading').classList.add('hidden');
+                };
+
+                player.onended = () => {
+                    if (nextId) window.location.href = `watch.html?id=${nextId}`;
+                };
+
+                supabaseClient.rpc('increment_view', { video_id: currentId }).then();
+                supabaseClient.from('security_analytics').insert([{ event_type: 'watch', video_id: currentId }]).then();
+
+                loadQueue();
+            } catch(e) {}
+        }
+
+        async function loadQueue() {
+            const list = document.getElementById('upNextList');
+            const { data } = await supabaseClient.from('videos').select('*').neq('id', currentId).limit(6);
+            if (!data || data.length === 0) return;
+
+            nextId = data[0].id;
+            list.innerHTML = data.map(v => `
+                <div onclick="window.location.href='watch.html?id=${v.id}'" class="flex gap-2 bg-[#121318] p-2 rounded-lg cursor-pointer border border-gray-800">
+                    <img src="${v.thumbnail_url || 'https://imghippo.nexpoint.click/7486903181/BQACAgUAAyEFAATk6e-_AAIN6WqJfMMGFrD21CcOWeKIEmZC_PnEAAKUIwAC5QABKFQT7Kd9IECv3z0E.webp'}" class="w-24 aspect-video object-cover rounded">
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 class="text-xs font-medium text-gray-200 line-clamp-2 leading-tight">${v.title}</h4>
+                        <span class="text-[10px] text-gray-500 mt-1 capitalize">${v.category || '18+'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function triggerShare() {
+            const shareUrl = window.location.href;
+            const text = `🔥 ${currentVideo ? currentVideo.title : 'Watch Now'} 💦👇\n${shareUrl}\nWatch before it gets deleted! 🔞`;
+            if (navigator.share) {
+                try { await navigator.share({ title: document.title, text: text, url: shareUrl }); } catch(e) {}
+            } else {
+                navigator.clipboard.writeText(text);
+                alert("Link copied to clipboard!");
+            }
+        }
+
+        async function handleLike() {
+            if (localStorage.getItem('liked_' + currentId)) return;
+            await supabaseClient.rpc('increment_like', { video_id: currentId });
+            document.getElementById('likeCount').innerText = parseInt(document.getElementById('likeCount').innerText) + 1;
+            localStorage.setItem('liked_' + currentId, 'true');
+        }
+
+        loadVideo();
+    </script>
+</body>
+</html>
