@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MiniHub</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23e11d48'/%3E%3Cpolygon points='38,28 75,50 38,72' fill='%23ffffff'/%3E%3C/svg%3E">
+    <meta name="google-site-verification" content="cd3pGHJbUqEqBH2d1D54HpZx9ts5Ggw8N-kd1Uc9yGg" />
+    <meta name="yandex-verification" content="cf34b73caf562ecd" />
+    <meta name="robots" content="index, follow">
+    <meta name="rating" content="RTA-5042-1996-1400-1579-1604-AVG">
+    <meta name="rating" content="adult">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #0b0c10;
+            color: #e5e7eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-[#0b0c10]/95 border-b border-gray-800 px-4 py-3 flex items-center justify-between gap-3">
+        <a href="index.html" class="flex items-center gap-2">
+            <span class="w-7 h-7 bg-rose-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">▶</span>
+            <span class="text-lg font-black tracking-wider text-white">MINI<span class="text-rose-500">HUB</span></span>
+        </a>
+
+        <div class="flex-1 max-w-xs">
+            <input 
+                type="text" 
+                id="searchInput" 
+                oninput="handleSearch()" 
+                placeholder="Search..." 
+                class="w-full bg-[#16181f] border border-gray-800 focus:border-rose-500 text-xs rounded-lg px-3 py-1.5 text-white outline-none"
+            >
+        </div>
+    </header>
+
+    <!-- Categories -->
+    <section class="px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar">
+        <button onclick="filterCategory('all', this)" class="cat-btn active bg-rose-600 text-white text-xs font-semibold px-3 py-1 rounded-md whitespace-nowrap">All</button>
+        <button onclick="filterCategory('18+', this)" class="cat-btn bg-[#16181f] text-gray-300 text-xs px-3 py-1 rounded-md whitespace-nowrap">18+</button>
+        <button onclick="filterCategory('entertainment', this)" class="cat-btn bg-[#16181f] text-gray-300 text-xs px-3 py-1 rounded-md whitespace-nowrap">Entertainment</button>
+        <button onclick="filterCategory('news', this)" class="cat-btn bg-[#16181f] text-gray-300 text-xs px-3 py-1 rounded-md whitespace-nowrap">News</button>
+    </section>
+
+    <!-- Video Grid -->
+    <main class="px-4 mt-2">
+        <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <!-- Loading Animation WebP -->
+            <div class="col-span-full py-16 flex flex-col items-center justify-center">
+                <img src="https://imghippo.nexpoint.click/7871123886/BQACAgUAAyEFAATk6e-_AAIN5mqJfAMXPgFgu3b6ZpJw3U7LxLYpAAJyDwACMm-hVQQz49tKX0kmPQQ.webp" alt="Loading" class="w-16 h-16 object-contain">
+            </div>
+        </div>
+
+        <div class="text-center mt-6">
+            <button id="loadMoreBtn" onclick="loadMore()" class="hidden bg-[#16181f] border border-gray-800 text-gray-300 text-xs font-bold px-6 py-2 rounded-xl">Load More</button>
+        </div>
+    </main>
+
+    <!-- Floating Bottom-Left ✍️ Blog Button -->
+    <a href="blog.html" title="Stories & Blog" class="fixed bottom-5 left-5 z-50 w-12 h-12 bg-rose-600 hover:bg-rose-700 text-white rounded-full flex items-center justify-center shadow-lg text-xl transition transform hover:scale-110 active:scale-95">
+        ✍️
+    </a>
+
+    <script>
+        const _k0 = "aHR0cHM6Ly9hcGV1dXpoZmpxcm1yZXN1b3JsdS5zdXBhYmFzZS5jbw==";
+        const _k1 = "c2JfcHVibGlzaGFibGVfN3lBUG52MW94Z3prMzNyTFhMTFZmQV9oZ0I3N28yaQ==";
+        const _ad0 = "aHR0cHM6Ly93d3cucHJvZml0YWJsZXJhdGVjcG1uZXR3b3JrLmNvbS9tYXVyaTZlMWY3P2tleT0zZjBmZDc0YzlmM2JmNTRlNjI2YzQ2ZjU3ZjAwMTQ3Nw==";
+
+        const _d = (s) => atob(s);
+        const supabaseClient = window.supabase.createClient(_d(_k0), _d(_k1));
+        const dynamicAdLink = _d(_ad0);
+
+        let allVideos = [];
+        let page = 0;
+        const PAGE_SIZE = 12;
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'c'))) e.preventDefault();
+        });
+
+        // Visitor logging
+        (function() {
+            try {
+                supabaseClient.from('security_analytics').insert([{ 
+                    event_type: 'visit', 
+                    device: /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                    hour_of_day: new Date().getHours()
+                }]).then();
+            } catch(e) {}
+        })();
+
+        async function fetchVideos(initial = false) {
+            const grid = document.getElementById('videoGrid');
+            if (initial) {
+                page = 0;
+                allVideos = [];
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 flex flex-col items-center justify-center">
+                        <img src="https://imghippo.nexpoint.click/7871123886/BQACAgUAAyEFAATk6e-_AAIN5mqJfAMXPgFgu3b6ZpJw3U7LxLYpAAJyDwACMm-hVQQz49tKX0kmPQQ.webp" alt="Loading" class="w-16 h-16 object-contain">
+                    </div>`;
+            }
+
+            const from = page * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .order('id', { ascending: false })
+                    .range(from, to);
+
+                if (error) throw error;
+                const newV = data || [];
+                allVideos = initial ? newV : [...allVideos, ...newV];
+
+                renderGrid(allVideos);
+
+                const btn = document.getElementById('loadMoreBtn');
+                btn.className = newV.length === PAGE_SIZE ? 'bg-[#16181f] border border-gray-800 text-gray-300 text-xs font-bold px-6 py-2 rounded-xl' : 'hidden';
+            } catch (err) {
+                if (initial) grid.innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-10">Failed to load.</p>';
+            }
+        }
+
+        function loadMore() {
+            page++;
+            fetchVideos(false);
+        }
+
+        function renderGrid(videos) {
+            const grid = document.getElementById('videoGrid');
+            if (!videos || videos.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-xs text-gray-500 py-10">No videos.</p>';
+                return;
+            }
+
+            grid.innerHTML = videos.map(v => {
+                const thumb = v.thumbnail_url || 'https://imghippo.nexpoint.click/7486903181/BQACAgUAAyEFAATk6e-_AAIN6WqJfMMGFrD21CcOWeKIEmZC_PnEAAKUIwAC5QABKFQT7Kd9IECv3z0E.webp';
+                return `
+                    <div class="bg-[#121318] border border-gray-800 rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
+                         onmouseenter="start3s(${v.id}, '${v.video_url}')"
+                         onmouseleave="stop3s(${v.id})"
+                         onclick="openWatch(${v.id}, '${v.category}')">
+                        
+                        <div class="relative aspect-video bg-black">
+                            <img id="poster-${v.id}" src="${thumb}" loading="lazy" class="w-full h-full object-cover">
+                            <video id="vid-${v.id}" muted playsinline preload="none" class="hidden absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
+                            <span class="absolute bottom-1 right-1 bg-black/70 text-[9px] text-white px-1 rounded">3s</span>
+                        </div>
+
+                        <div class="p-2">
+                            <h3 class="text-xs font-medium line-clamp-2 leading-tight text-gray-200">${v.title}</h3>
+                            <div class="flex justify-between items-center text-[10px] text-gray-500 mt-1">
+                                <span class="capitalize">${v.category || '18+'}</span>
+                                <span>👁️ ${v.views || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function start3s(id, url) {
+            const v = document.getElementById(`vid-${id}`);
+            const p = document.getElementById(`poster-${id}`);
+            if (!v) return;
+
+            if (!v.src || v.src === window.location.href) v.src = url;
+            v.classList.remove('hidden');
+            if (p) p.classList.add('hidden');
+
+            v.currentTime = 0;
+            v.play().catch(() => {});
+            v.ontimeupdate = () => {
+                if (v.currentTime >= 3) v.currentTime = 0;
+            };
+        }
+
+        function stop3s(id) {
+            const v = document.getElementById(`vid-${id}`);
+            const p = document.getElementById(`poster-${id}`);
+            if (!v) return;
+            v.pause();
+            v.currentTime = 0;
+            v.classList.add('hidden');
+            if (p) p.classList.remove('hidden');
+        }
+
+        function openWatch(id, cat) {
+            try {
+                let interests = JSON.parse(localStorage.getItem('user_interests')) || {};
+                interests[cat] = (interests[cat] || 0) + 1;
+                localStorage.setItem('user_interests', JSON.stringify(interests));
+            } catch(e) {}
+
+            try { if (dynamicAdLink) window.open(dynamicAdLink, '_blank'); } catch(e) {}
+            window.location.href = `watch.html?id=${id}`;
+        }
+
+        function handleSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderGrid(allVideos.filter(v => v.title.toLowerCase().includes(q)));
+        }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.className = 'cat-btn bg-[#16181f] text-gray-300 text-xs px-3 py-1 rounded-md whitespace-nowrap';
+            });
+            btn.className = 'cat-btn active bg-rose-600 text-white text-xs font-semibold px-3 py-1 rounded-md whitespace-nowrap';
+
+            if (cat === 'all') renderGrid(allVideos);
+            else renderGrid(allVideos.filter(v => (v.category || '').toLowerCase() === cat.toLowerCase()));
+        }
+
+        fetchVideos(true);
+    </script>
+</body>
+</html>
